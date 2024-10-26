@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Cube with Text - Three.js</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script>
+    // Scene setup
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x202020); // Dark background color
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Add lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xffffff, 1);
+    pointLight.position.set(10, 10, 10);
+    scene.add(pointLight);
+
+    // Create a canvas texture with text
+    function createTextTexture(text) {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = 512;
+      canvas.height = 512;
+
+      // Set background color and text styles
+      context.fillStyle = 'blue'; // Background color
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.font = 'Bold 40px Arial';
+      context.fillStyle = '#ffffff'; // Text color
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(text, canvas.width / 2, canvas.height / 2);
+
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    // Create cube with text texture on each side
+    const materials = [
+      new THREE.MeshStandardMaterial({ map: createTextTexture('made by Voltov') }),
+      new THREE.MeshStandardMaterial({ map: createTextTexture('made by Voltov') }),
+      new THREE.MeshStandardMaterial({ map: createTextTexture('made by Voltov') }),
+      new THREE.MeshStandardMaterial({ map: createTextTexture('made by Voltov') }),
+      new THREE.MeshStandardMaterial({ map: createTextTexture('made by Voltov') }),
+      new THREE.MeshStandardMaterial({ map: createTextTexture('made by Voltov') })
+    ];
+
+    const geometry = new THREE.BoxGeometry();
+    const cube = new THREE.Mesh(geometry, materials);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Rotate cube
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+  </script>
+</body>
+</html>
